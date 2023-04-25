@@ -56,6 +56,11 @@ namespace Manager.Services.Services
         {
             var userExists = await _userRepository.Get(id);
 
+            if (userExists is null)
+            {
+                throw new DomainExceptions("User not found");
+            }
+
             return _mapper.Map<UserDTO>(userExists);
         }
 
@@ -63,12 +68,22 @@ namespace Manager.Services.Services
         {
             var allUsers = await _userRepository.Get();
 
+            if (allUsers is null || allUsers.Equals(0))
+            {
+                throw new DomainExceptions("Users not found");
+            }
+
             return _mapper.Map<List<UserDTO>>(allUsers);
         }
 
         public virtual async Task<UserDTO> GetByEmail(string email)
         {
             var userExists = await _userRepository.GetByEmail(email);
+
+            if (userExists is null)
+            {
+                throw new DomainExceptions("User not found");
+            }
 
             return _mapper.Map<UserDTO>(userExists);
         }
@@ -82,12 +97,22 @@ namespace Manager.Services.Services
         {
             var userExists = await _userRepository.SearchByEmail(email);
 
+            if (userExists is null || userExists.Equals(0))
+            {
+                throw new DomainExceptions("Users not found");
+            }
+
             return _mapper.Map<List<UserDTO>>(userExists);
         }
 
         public virtual async Task<List<UserDTO>> SearchByName(string name)
         {
             var userExists = await _userRepository.SearchByName(name);
+
+            if (userExists is null || userExists.Equals(0))
+            {
+                throw new DomainExceptions("Users not found");
+            }
 
             return _mapper.Map<List<UserDTO>>(userExists);
         }

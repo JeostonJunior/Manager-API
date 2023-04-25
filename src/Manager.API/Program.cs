@@ -18,6 +18,7 @@ var autoMapperConfig = new MapperConfiguration(config =>
 {
     config.CreateMap<User, UserDTO>().ReverseMap();
     config.CreateMap<CreateUserViewModel, UserDTO>().ReverseMap();
+    config.CreateMap<UpdateUserViewModel, UserDTO>().ReverseMap();
 });
 
 // Add services to the container.

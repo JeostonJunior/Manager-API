@@ -45,5 +45,175 @@ namespace Manager.API.Controllers
                 return StatusCode(500, Responses.ApplicationErrorMessage());
             }
         }
+
+        [HttpPut("/api/v1/update")]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserViewModel updateUserViewModel)
+        {
+            try
+            {
+                var userDTO = _mapper.Map<UserDTO>(updateUserViewModel);
+
+                var userUpdated = await _userService.Update(userDTO);
+
+                return Ok(new ResultViewModel
+                {
+                    Message = "The User has been updated",
+                    Success = true,
+                    Data = userUpdated
+                });
+            }
+            catch (DomainExceptions ex)
+            {
+                return BadRequest(Responses.DomainErrorMessage(ex.Message, ex.Errors));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, Responses.ApplicationErrorMessage());
+            }
+        }
+
+        [HttpDelete("/api/v1/delete/{id:long}")]
+        public async Task<IActionResult> UserDeleteAsync(long id)
+        {
+            try
+            {               
+                await _userService.Remove(id);
+
+                return Ok(new ResultViewModel
+                {
+                    Message = "The User has been deleted",
+                    Success = true,
+                    Data = null
+                });
+            }
+            catch (DomainExceptions ex)
+            {
+                return BadRequest(Responses.DomainErrorMessage(ex.Message, ex.Errors));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, Responses.ApplicationErrorMessage());
+            }
+        }
+
+        [HttpGet("/api/v1/user/{id:long}")]
+        public async Task<IActionResult> UserGetAsync(long id)
+        {
+            try
+            {
+                var userExists = await _userService.Get(id);               
+
+                return Ok(new ResultViewModel
+                {
+                    Message = "User successfully retrieved",
+                    Success = true,
+                    Data = userExists
+                });
+            }
+            catch (DomainExceptions ex)
+            {
+                return NotFound(Responses.DomainErrorMessage(ex.Message, ex.Errors));
+            }            
+            catch (Exception)
+            {
+                return StatusCode(500, Responses.ApplicationErrorMessage());
+            }
+        }
+
+        [HttpGet("/api/v1/user/search-by-name/{name}")]
+        public async Task<IActionResult> UserGetAsync(string name)
+        {
+            try
+            {
+                var userExists = await _userService.SearchByName(name);
+
+                return Ok(new ResultViewModel
+                {
+                    Message = "User successfully retrieved",
+                    Success = true,
+                    Data = userExists
+                });
+            }
+            catch (DomainExceptions ex)
+            {
+                return NotFound(Responses.DomainErrorMessage(ex.Message, ex.Errors));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, Responses.ApplicationErrorMessage());
+            }
+        }
+
+        [HttpGet("/api/v1/user/get-by-email/{email}")]
+        public async Task<IActionResult> UserGetEmailAsync(string email)
+        {
+            try
+            {
+                var userExists = await _userService.GetByEmail(email);
+
+                return Ok(new ResultViewModel
+                {
+                    Message = "User successfully retrieved",
+                    Success = true,
+                    Data = userExists
+                });
+            }
+            catch (DomainExceptions ex)
+            {
+                return NotFound(Responses.DomainErrorMessage(ex.Message, ex.Errors));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, Responses.ApplicationErrorMessage());
+            }
+        }
+
+        [HttpGet("/api/v1/user/search-by-email/{email}")]
+        public async Task<IActionResult> UserSerachEmailAsync(string email)
+        {
+            try
+            {
+                var userExists = await _userService.SearchByEmail(email);
+
+                return Ok(new ResultViewModel
+                {
+                    Message = "User successfully retrieved",
+                    Success = true,
+                    Data = userExists
+                });
+            }
+            catch (DomainExceptions ex)
+            {
+                return NotFound(Responses.DomainErrorMessage(ex.Message, ex.Errors));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, Responses.ApplicationErrorMessage());
+            }
+        }
+
+        [HttpGet("/api/v1/all-users")]
+        public async Task<IActionResult> UserGetAllAsync()
+        {
+            try
+            {
+                var userExists = await _userService.Get();
+
+                return Ok(new ResultViewModel
+                {
+                    Message = "Successfully retrieved Users",
+                    Success = true,
+                    Data = userExists
+                });
+            }
+            catch (DomainExceptions ex)
+            {
+                return NotFound(Responses.DomainErrorMessage(ex.Message, ex.Errors));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, Responses.ApplicationErrorMessage());
+            }
+        }
     }
 }
