@@ -12,7 +12,7 @@ namespace Manager.API.ViewModels
         [StringLength(80, MinimumLength = 10, ErrorMessage = "Invalid Email length")]       
         [RegularExpression(@"[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+")]
         public string Email { get; set; }
-
+        
         [Required(ErrorMessage = "The Password cannot be null")]
         [StringLength(20, MinimumLength = 8, ErrorMessage = "Invalid Password length")]
         [DataType(DataType.Password)]
