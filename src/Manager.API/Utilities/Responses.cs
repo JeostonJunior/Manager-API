@@ -40,7 +40,11 @@ namespace Manager.API.Utilities
             {
                 Message = "The token is invalid, unauthorized access",
                 Success = false,
-                Data = null
+                Data = new
+                {
+                    Token = string.Empty,
+                    Expires = DateTime.MinValue
+                }
             };
         }
     }
