@@ -4,6 +4,7 @@ using Manager.API.ViewModels;
 using Manager.Core.Exceptions;
 using Manager.Services.DTOS;
 using Manager.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manager.API.Controllers
@@ -21,6 +22,7 @@ namespace Manager.API.Controllers
         }
 
         [HttpPost("/api/v1/users/create")]
+        [Authorize]
         public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserViewModel user)
         {
             try
@@ -46,7 +48,8 @@ namespace Manager.API.Controllers
             }
         }
 
-        [HttpPut("/api/v1/update")]
+        [HttpPut("/api/v1/users/update")]
+        [Authorize]
         public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserViewModel updateUserViewModel)
         {
             try
@@ -72,7 +75,8 @@ namespace Manager.API.Controllers
             }
         }
 
-        [HttpDelete("/api/v1/delete/{id:long}")]
+        [HttpDelete("/api/v1/users/delete/{id:long}")]
+        [Authorize]
         public async Task<IActionResult> UserDeleteAsync(long id)
         {
             try
@@ -96,7 +100,8 @@ namespace Manager.API.Controllers
             }
         }
 
-        [HttpGet("/api/v1/user/{id:long}")]
+        [HttpGet("/api/v1/users/{id:long}")]
+        [Authorize]
         public async Task<IActionResult> UserGetAsync(long id)
         {
             try
@@ -120,7 +125,8 @@ namespace Manager.API.Controllers
             }
         }
 
-        [HttpGet("/api/v1/user/search-by-name/{name}")]
+        [HttpGet("/api/v1/users/search-by-name/{name}")]
+        [Authorize]
         public async Task<IActionResult> UserGetAsync(string name)
         {
             try
@@ -144,7 +150,8 @@ namespace Manager.API.Controllers
             }
         }
 
-        [HttpGet("/api/v1/user/get-by-email/{email}")]
+        [HttpGet("/api/v1/users/get-by-email/{email}")]
+        [Authorize]
         public async Task<IActionResult> UserGetEmailAsync(string email)
         {
             try
@@ -168,7 +175,8 @@ namespace Manager.API.Controllers
             }
         }
 
-        [HttpGet("/api/v1/user/search-by-email/{email}")]
+        [HttpGet("/api/v1/users/search-by-email/{email}")]
+        [Authorize]
         public async Task<IActionResult> UserSerachEmailAsync(string email)
         {
             try
@@ -192,7 +200,8 @@ namespace Manager.API.Controllers
             }
         }
 
-        [HttpGet("/api/v1/all-users")]
+        [HttpGet("/api/v1/users/all-users")]
+        [Authorize]
         public async Task<IActionResult> UserGetAllAsync()
         {
             try
