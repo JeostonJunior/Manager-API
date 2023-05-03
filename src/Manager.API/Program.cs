@@ -1,6 +1,7 @@
 using AutoMapper;
 using Manager.API.Utilities;
 using Manager.API.ViewModels;
+using Manager.Domain.Constants;
 using Manager.Domain.Entities;
 using Manager.Infra.Context;
 using Manager.Infra.Interfaces;
@@ -18,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region JWT
 
-var jwtSecretKey = builder.Configuration.GetSection("Jwt").GetValue<string>("Key");
+var settings = builder.Configuration.GetSection(Constants.SETTINGS_SECTION).Get<ApiSettings>();
 
 builder.Services.AddAuthentication(auth =>
 {
@@ -32,7 +33,7 @@ builder.Services.AddAuthentication(auth =>
     {
         ValidateIssuerSigningKey = true,
         ValidateIssuer = false,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecretKey)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(settings.JwtSettings.Key)),
         ValidateAudience = false
     };
 });
@@ -51,32 +52,30 @@ var autoMapperConfig = new MapperConfiguration(config =>
     config.CreateMap<UpdateUserViewModel, UserDTO>().ReverseMap();
 });
 
-builder.Services.AddSingleton(autoMapperConfig.CreateMapper());
-
 #endregion
 
 #region Swagger
 
 builder.Services.AddSwaggerGen(config =>
 {
-    config.SwaggerDoc("v1", new OpenApiInfo
+    config.SwaggerDoc(Constants.SWAGGER_VERSION, new OpenApiInfo
     {
-        Title = "Manager API",
-        Version = "v1",
-        Description = "Database user management API using Automapper, DTO Model, Repository Pattern and SQLServer",
+        Title = Constants.SWAGGER_TITLE,
+        Version = Constants.SWAGGER_VERSION,
+        Description = Constants.SWAGGER_DESCRIPTION,
         Contact = new OpenApiContact
         {
-            Name = "Jeoston Araujo",
-            Email = "jeostonjunior@gmail.com",
-            Url = new Uri("https://www.linkedin.com/in/jeoston-araujo/")
+            Name = Constants.SWAGGER_CONTACT_NAME,
+            Email = Constants.SWAGGER_CONTACT_EMAIL,
+            Url = new Uri(Constants.SWAGGER_CONTACT_URL)
         }
     });
 
-    config.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    config.AddSecurityDefinition(Constants.SWAGGER_BEARER, new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Please use Bearer <TOKEN>",
-        Name = "Authorization",
+        Description = Constants.SWAGGER_SECURITY_DESCRIPTION,
+        Name = Constants.SWAGGER_SECURITY_NAME,
         Type = SecuritySchemeType.ApiKey
     });
 
@@ -88,7 +87,7 @@ builder.Services.AddSwaggerGen(config =>
                 Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
+                            Id = Constants.SWAGGER_BEARER
                         }
             },
             Array.Empty<string>()
@@ -100,16 +99,16 @@ builder.Services.AddSwaggerGen(config =>
 
 #region DataBase
 
-var connectionString = builder.Configuration.GetConnectionString("ManagerBD");
-
-builder.Services.AddDbContext<ManagerContext>(options => options.UseSqlServer(connectionString).EnableSensitiveDataLogging()
+builder.Services.AddDbContext<ManagerContext>(options => options.UseSqlServer(settings.ConnectionString.ManagerBD).EnableSensitiveDataLogging()
                 .UseLoggerFactory(LoggerFactory.Create(bld => bld.AddConsole())), ServiceLifetime.Transient);
 
 #endregion
 
 #region Dependency Injection
 
-builder.Services.AddScoped<IUserService, UserService>()
+builder.Services.AddSingleton(settings)
+                .AddSingleton(autoMapperConfig.CreateMapper())
+                .AddScoped<IUserService, UserService>()
                 .AddScoped<IUserRepository, UserRepository>()
                 .AddSingleton<ITokenGenerator, TokenGenerator>();
 
