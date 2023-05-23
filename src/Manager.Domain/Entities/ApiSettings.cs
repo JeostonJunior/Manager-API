@@ -4,6 +4,6 @@
     {
         public JwtSettings JwtSettings { get; set; }
         
-        public ConnectionString ConnectionString { get; set; }
+        public ConnectionStrings ConnectionStrings { get; set; }
     }
 }

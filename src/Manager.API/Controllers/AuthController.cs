@@ -1,31 +1,30 @@
 ﻿using Manager.API.Utilities;
 using Manager.API.ViewModels;
+using Manager.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manager.API.Controllers
 {
     [ApiController]
     public class AuthController : ControllerBase
-    {
-        private readonly IConfiguration _configuration;
+    {       
         private readonly ITokenGenerator _tokenGenerator;
+        private readonly ApiSettings _apiSettings;
 
-        public AuthController(IConfiguration configuration, ITokenGenerator tokenGenerator)
-        {
-            _configuration = configuration;
+        public AuthController(ITokenGenerator tokenGenerator, ApiSettings apiSettings)
+        {           
             _tokenGenerator = tokenGenerator;
+            _apiSettings = apiSettings;
         }
 
         [HttpPost("/api/v1/auth/login")]
         public IActionResult Login([FromBody] LoginViewModel loginViewModel)
         {
             try
-            {
-                var config = _configuration.GetSection("Jwt");
-
-                var tokenLogin = config.GetValue<string>("Login");
-                var tokenPassword = config.GetValue<string>("Password");
-                var jwtExpires = config.GetValue<string>("HoursToExpire");
+            {              
+                var tokenLogin = _apiSettings.JwtSettings.Login;
+                var tokenPassword = _apiSettings.JwtSettings.Password;
+                var jwtExpires = _apiSettings.JwtSettings.HoursToExpire;
 
                 if (loginViewModel.Login.Equals(tokenLogin) && loginViewModel.Password.Equals(tokenPassword))
                 {

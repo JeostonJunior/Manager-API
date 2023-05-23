@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Manager.Domain.Entities;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -6,23 +7,21 @@ using System.Text;
 namespace Manager.API.Utilities
 {
     public class TokenGenerator : ITokenGenerator
-    {
-        private IConfiguration _configuration;
+    {       
+        private readonly ApiSettings _apiSettings;
 
-        public TokenGenerator(IConfiguration configuration)
-        {
-            _configuration = configuration;
+        public TokenGenerator(ApiSettings apiSettings)
+        {           
+            _apiSettings = apiSettings;
         }
 
         public string GenerateToken()
-        {
-            var config = _configuration.GetSection("Jwt");
+        {            
+            var jwtKey = _apiSettings.JwtSettings.Key;
 
-            var jwtKey = config.GetValue<string>("Key");
+            var jwtLogin = _apiSettings.JwtSettings.Login;
 
-            var jwtLogin = config.GetValue<string>("Login");
-
-            var jwtExpires = config.GetValue<string>("HoursToExpire");
+            var jwtExpires = _apiSettings.JwtSettings.HoursToExpire;
 
 
             var tokenHandler = new JwtSecurityTokenHandler();

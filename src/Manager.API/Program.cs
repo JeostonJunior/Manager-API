@@ -99,7 +99,7 @@ builder.Services.AddSwaggerGen(config =>
 
 #region DataBase
 
-builder.Services.AddDbContext<ManagerContext>(options => options.UseSqlServer(settings.ConnectionString.ManagerBD).EnableSensitiveDataLogging()
+builder.Services.AddDbContext<ManagerContext>(options => options.UseSqlServer(settings.ConnectionStrings.ManagerBD).EnableSensitiveDataLogging()
                 .UseLoggerFactory(LoggerFactory.Create(bld => bld.AddConsole())), ServiceLifetime.Transient);
 
 #endregion

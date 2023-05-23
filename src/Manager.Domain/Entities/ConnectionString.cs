@@ -1,6 +1,6 @@
 ﻿namespace Manager.Domain.Entities
 {
-    public class ConnectionString
+    public class ConnectionStrings
     {
         public string ManagerBD { get; set; }
     }
